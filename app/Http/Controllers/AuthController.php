@@ -88,5 +88,33 @@ class AuthController extends Controller
     {
         return Auth::guard('api');
     }
+    public function api(){
+        $result_length = 0;
+        $result_data = [];
+        while($result_length<5){
+            $ch = curl_init();
+            curl_setopt($ch,CURLOPT_URL,'https://api.kanye.rest');
+            curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+            curl_Setopt($ch,CURLOPT_TIMEOUT,10);
+            $result = curl_exec($ch);
+            $result = json_decode($result,true);
+            curl_close($ch);
+            if(!empty($result)){
+                if(!in_array($result_data,$result)){
+                    array_push($result_data,$result);
+                    $result_length = $result_length+1;
+                };
+            };
+        };
+        // print_r($result_data);
+        return  response()->json([
+            'status' =>1,
+            'message' =>'success',
+            'data'=>$result_data
+        ]);
+
+
+
+    }
 
 }
